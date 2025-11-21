@@ -1,17 +1,16 @@
 const express = (require('express'));
 const mongoose = require('mongoose')
+import connectString from './.env.js';
 const app = express()
-mongoose.set('strictQuery')
-const PORT = 3000;
+mongoose.set('strictQuery', false)
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.get('/testExpress.js', (req, res) => {
     res.send('Hello everyone')
 });
-app.listen(PORT, () => {
-    console.log('The app is listening on ' + PORT)
-})
+
 
 const customers = [
   {
@@ -80,3 +79,16 @@ const customers = [
     "loyaltyPoints": 320
   }
 ]
+
+const start = async () => {
+    try {
+          await mongoose.connect(connectString)
+    app.listen(PORT, () => {
+        console.log('The app is listening on ' + PORT)
+    })
+    } catch (error) {
+        console.log(error.message)
+    }
+  
+}
+start()
