@@ -2,10 +2,10 @@ const express = (require('express'));
 const mongoose = require('mongoose')
 const dotenv = require('dotenv');
 dotenv.config()
-const connectString = 'mongodb+srv://mercyojogo_db_user:0kEOVjqR1VwKeJet@cluster0.jhvmqjn.mongodb.net/?appName=Cluster0'
 const app = express()
 mongoose.set('strictQuery', false)
 const PORT = process.env.PORT || 3000;
+const connectString = process.env.connectString
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
