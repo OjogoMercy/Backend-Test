@@ -1,11 +1,17 @@
-const http = (require('http'));
-const server = http.createServer((res, req) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hey there , this is my first attempt in Backend Development');
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-})
+const app = express();
+app.use(express.json());
 
-server.listen(3000, '127.0.0.1', () => {
-    console.log('The Server is running succesfully')
-})
+mongoose.connect(process.env.MONGO_URI);
+
+app.post("/register", register);
+app.post("/login", login);
+
+app.get("/profile", verifyToken, (req, res) => {
+  res.json({ message: "Welcome to your profile", userId: req.user.id });
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
