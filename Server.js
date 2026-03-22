@@ -1,17 +1,24 @@
-const express = require("express");
-const mongoose = require("mongoose");
-require("dotenv").config();
+// Day 1 reading files in Node.js
+const fsPromises = require("fs").promises;
+const path = require("path");
 
-const app = express();
-app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI);
 
-app.post("/register", register);
-app.post("/login", login);
+// fs.readFile(path.join(__dirname, "text.txt"), "utf8", (error, data) => {
+//   if (error) throw error;
+//   console.log(data);
+// });
 
-app.get("/profile", verifyToken, (req, res) => {
-  res.json({ message: "Welcome to your profile", userId: req.user.id });
-});
+// fs.appendFile(
+//   path.join(__dirname, "Reply.txt"),
+//   " Nice to meet you  ",
+//   (error) => {
+//     if (error) throw error;
+//     console.log("Here is a message to see if this works ");
+//   },
+// );
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+
+// console.log("help me im tired already ...");
+
+//
