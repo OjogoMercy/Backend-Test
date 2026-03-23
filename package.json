@@ -12,9 +12,12 @@
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "date-fns": "^4.1.0",
+    "date-format": "^4.0.14",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.20.4"
+    "mongoose": "^8.20.4",
+    "uuid": "^13.0.0"
   }
 }
