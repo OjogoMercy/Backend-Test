@@ -44,31 +44,7 @@ const server = http.createServer((request, response) => {
   }
 });
 
-// const readable = fs.createReadStream('./Views/index.html', { 
-//     encoding: 'utf8',
-//     highWaterMark: 64 // tiny chunk size so you can SEE it chunking
-// });
 
-// readable.on('data', (chunk) => {
-//     console.log('--- chunk received ---');
-//     console.log(chunk);
-// });
 
-// readable.on('end', () => {
-//     console.log('--- stream finished ---');
-// });
 
-const { Buffer } = require('buffer');
-
-const buf1 = Buffer.alloc(10);
-const buf2 = Buffer.alloc(10, 'a');
-const buf3 = Buffer.from('Àdéṣọlá');
-
-console.log(buf1);
-console.log(buf2);
-console.log(buf3);
-
-console.log(buf1.toString());
-console.log(buf2.toString());
-console.log(buf3.toString());
 server.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
