@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 // to listen and check different file type s
 const serveFile = async (response, filePath, contentType) => {
   try {
-    const data = await fsPromises.readFile(filePath);
+    const data = await fsPromises.readFile(filePath, !contentType.includes('image') ? 'utf8' : '');
     response.writeHead(200, { "Content-Type": contentType });
     response.end(data);
   } catch (error) {
@@ -37,6 +37,10 @@ const server = http.createServer((request, response) => {
     case "/app.js":
       filePath = path.join(__dirname, "public", "app.js");
       serveFile(response, filePath, "application/javascript");
+      break;
+      case "Views/index.html": 
+      filePath = path.join(__dirname,"Views", "index.html");
+      serveFile(response,filePath,"image/jpeg");
       break;
     default:
       response.writeHead(404, { "Content-Type": "text/plain" });
