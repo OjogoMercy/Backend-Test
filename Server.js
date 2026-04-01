@@ -3,6 +3,8 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const {v4: uuid} = require("uuid")
 
 const PORT = process.env.PORT || 3000;
 // to handle form data
@@ -30,7 +32,7 @@ app.post("/register", (req, res) => {
       if (error) {
         return res.status(500).json({ message: "Error hashing the password" });
       }
-      users.push({ userName, email, password: hash });
+      users.push({ userName, email, password: hash ,id: uuid()});
       return res.status(201).json({ message: "User registered successfully" });
     });
   }
@@ -51,7 +53,12 @@ app.post("/login", (req, res) => {
     if (!match) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    return res.status(200).json({ message: "Login successful" });
+    const token = jwt.sign(
+      { userId: foundUser.id, email: foundUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+    return res.status(200).json({ message: "Login successful", token });
   });
 });
 app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
