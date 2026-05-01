@@ -1,3 +1,8 @@
-const {prismaClient} = require("@prisma/client")
-const prisma = new prismaClient()
+require("dotenv").config();
+const { PrismaClient } = require("@prisma/client");
+const { PrismaNeon } = require("@prisma/adapter-neon");
+
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
 module.exports = prisma;

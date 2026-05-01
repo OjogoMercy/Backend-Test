@@ -5,6 +5,7 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuid } = require("uuid");
+const prisma = require("./prismaClient");
 
 const PORT = process.env.PORT || 3000;
 // to handle form data
@@ -23,16 +24,16 @@ app.get(/\/Views\/newPage(\.html)?/, (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
-    const emailExists = users.find((user) => user.email === email);
-
     if (!userName || !email || !password) {
       return res.status(400).json({ message: "Please fill in all fields" });
-    } else if (emailExists) {
+    }     
+    const emailExists = await prisma.user.findUnique({where:{email}});
+     if (emailExists) {
       return res.status(409).json({ message: "This email already exists" });
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-    users.push({ id: uuid(), userName, email, password: hashPassword });
+   const user = await prisma.user.create({data:{ userName,email,password:hashPassword}});
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Register error:", error);
@@ -45,7 +46,7 @@ app.post("/login", async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
-    const foundUser = users.find((user) => user.email === email);
+const foundUser = await prisma.user.findUnique({where:{email}});
     if (!foundUser) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
