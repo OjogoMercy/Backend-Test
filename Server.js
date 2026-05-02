@@ -8,11 +8,9 @@ const { v4: uuid } = require("uuid");
 const prisma = require("./prismaClient");
 
 const PORT = process.env.PORT || 3000;
-// to handle form data
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
-const users = [];
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "Views", "index.html"));
@@ -113,7 +111,6 @@ app.post("/Children", verifyToken, async (req, res) => {
 app.post("/Immunisation", verifyToken, async (req, res) => {
   try {
   const { vaccineName, dueDate, childId } = req.body;
-
      if (!vaccineName || !dueDate || !childId) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
@@ -122,8 +119,7 @@ app.post("/Immunisation", verifyToken, async (req, res) => {
     });
     if (!child) {
       return res.status(404).json({ message: "child not found" });
-    }
-   
+    }   
     const parsedDueDate = new Date(dueDate);
     const newImmunisation = await prisma.immunisation.create({
       data: {  vaccineName,
@@ -139,5 +135,38 @@ app.post("/Immunisation", verifyToken, async (req, res) => {
     return res.status(500).json({ message: "server error" });
   }
 });
+app.post("/GrowthRecord", verifyToken,async (req,res) =>{
+  try{
+  const {height,weight,date,childId} = req.body;
+
+    if(!height || !weight || !date || childId){
+      return res.status(400).json({message: "Please fill in all fields"});
+    }
+    const child = await prisma.child.findFirst({
+      where:{
+        id:childId,
+        userId:req.user.userId
+      }
+    })
+    if(!child){
+      return res.status(403).json({message: "child not found"});
+    }
+    const newGrowthRecord = await prisma.growthRecord.create({
+      data:{
+        weight:parseFloat(weight),
+        height:parseFloat(height),
+        dateOfBirth:new Date(date),
+        childId:childId
+      }
+    })
+    return res.status(201).json({
+      message: "Growth record created successfully",
+      growthRecord: newGrowthRecord
+    })
+  }catch(error){
+    console.error("error messsage", error);
+    return res.status(500).json({ message: "server error" });
+  }
+})
 
 app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
