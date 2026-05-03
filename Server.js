@@ -65,6 +65,7 @@ app.post("/login", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -79,9 +80,11 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Token error" });
   }
 };
+
 app.get("/Views/index.html", verifyToken, (req, res) => {
   res.json({ user: req.user, message: "You have access to this file" });
 });
+
 app.post("/Children", verifyToken, async (req, res) => {
   try {
     const { name, dateOfBirth, gender } = req.body;
@@ -108,6 +111,7 @@ app.post("/Children", verifyToken, async (req, res) => {
     return res.status(500).json({ message: "server error" });
   }
 });
+
 app.post("/Immunisation", verifyToken, async (req, res) => {
   try {
   const { vaccineName, dueDate, childId } = req.body;
@@ -135,6 +139,7 @@ app.post("/Immunisation", verifyToken, async (req, res) => {
     return res.status(500).json({ message: "server error" });
   }
 });
+
 app.post("/GrowthRecord", verifyToken,async (req,res) =>{
   try{
   const {height,weight,date,childId} = req.body;
