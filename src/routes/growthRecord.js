@@ -1,10 +1,10 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
+const router = express.Router()
 const prisma = require("./prismaClient");
-const verifyToken = require("./verifyToken")
+const verifyToken = require("./authRoutes")
 
-app.post("/GrowthRecord", verifyToken,async (req,res) =>{
+router.post("/GrowthRecord", verifyToken,async (req,res) =>{
   try{
   const {height,weight,date,childId} = req.body;
 
@@ -37,3 +37,4 @@ app.post("/GrowthRecord", verifyToken,async (req,res) =>{
     return res.status(500).json({ message: "server error" });
   }
 })
+module.exports = router;
