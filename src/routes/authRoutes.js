@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const prisma = require("./prismaClient");
 
 
-
 router.post("/register", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
@@ -28,7 +27,7 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
-app.post("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {

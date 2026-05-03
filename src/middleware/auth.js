@@ -14,4 +14,4 @@ const jwt = require("jsonwebtoken");
     console.error("Server Error", error);
   }
 };
-module.exports = {verifyToken}
+module.exports = verifyToken
