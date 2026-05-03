@@ -1,14 +1,13 @@
-require("dotenv").config();
 const express = require("express");
 const router = express.Router()
 const prisma = require("./prismaClient");
-const verifyToken = require("./authRoutes")
+const verifyToken = require("../middleware/auth")
 
 router.post("/GrowthRecord", verifyToken,async (req,res) =>{
   try{
   const {height,weight,date,childId} = req.body;
 
-    if(!height || !weight || !date || childId){
+    if(!height || !weight || !date || !childId){
       return res.status(400).json({message: "Please fill in all fields"});
     }
     const child = await prisma.child.findFirst({
@@ -24,7 +23,7 @@ router.post("/GrowthRecord", verifyToken,async (req,res) =>{
       data:{
         weight:parseFloat(weight),
         height:parseFloat(height),
-        dateOfBirth:new Date(date),
+        date:new Date(date),
         childId:childId
       }
     })

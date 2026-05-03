@@ -1,9 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const prisma = require("./prismaClient");
+const prisma = require("../../prismaClient");
 
 
 router.post("/register", async (req, res) => {
