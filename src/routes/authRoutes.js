@@ -1,14 +1,13 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
+const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { v4: uuid } = require("uuid");
 const prisma = require("./prismaClient");
 
 
 
-app.post("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
     if (!userName || !email || !password) {
@@ -54,3 +53,5 @@ app.post("/login", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+module.exports = router;
