@@ -36,4 +36,27 @@ router.post("/GrowthRecord", verifyToken,async (req,res) =>{
     return res.status(500).json({ message: "server error" });
   }
 })
+router.delete("/growthRecord/:growthRecordId", verifyToken, async (req,res) =>{
+try{
+  const {growthRecordId}= req.params;
+const growthRecord = await prisma.growthRecord.findFirst({
+  where:{
+    id:growthRecordId,
+    userId :req.user.userId}
+})
+if(!growthRecord){
+  return res.status(403).json({message:"Record not found"})
+}
+await prisma.growthRecord.delete({
+  where:{
+    id:growthRecordId
+  }
+})
+return res.status(204).send();
+}catch(error){
+  console.error("error messsage", error);
+  return res.status(500).json({ message: "server error" });
+}
+})
+
 module.exports = router;

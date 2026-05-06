@@ -83,5 +83,28 @@ router.delete("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
     return res.status(500).json({ message: "server error" });
   }
 })
+router.patch("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
+  try{
+    const {childId} = req.params;
+    const { administered } = req.body;
+ const existingChild = await prisma.child.findFirst({
+  where:{
+    id:childId,
+    userId:req.user.userId
+  }
+ })
+ if(!existingChild){
+  return res.status(404).json({message:"Child does not exist"})
+ }
+ const updatedChild = await prisma.child.update({
+  where:{id:childId},
+  data:{administered:administered}
+ })
+ return res.status(200).json({message:"Immunisation updated successfully", immunisation:updatedChild})
+  }catch(error){
+    console.error("error message", error);
+    return res.status(500).json({ message: "server error" });
+  }
+})
 
 module.exports = router;
