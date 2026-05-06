@@ -28,7 +28,7 @@ model Child {
 
 model Immunisation {
   id           String   @id @default(uuid())
-  vaccineName  String
+  vaccineId  String
   dueDate      DateTime
   administered Boolean  @default(false)
   child        Child    @relation(fields: [childId], references: [id], onDelete: Cascade)

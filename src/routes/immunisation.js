@@ -1,25 +1,27 @@
 const express = require("express");
-const router = express.Router()
+const router = express.Router();
 const prisma = require("../../prismaClient");
-const verifyToken = require("./authRoutes")
+const verifyToken = require("./authRoutes");
 
 router.post("/Immunisation", verifyToken, async (req, res) => {
   try {
-  const { vaccineName, dueDate, childId } = req.body;
-     if (!vaccineName || !dueDate || !childId) {
+    const { vaccineId, administeredDate, childId } = req.body;
+    if (!vaccineId || !administeredDate || !childId) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
     const child = await prisma.child.findFirst({
       where: { id: childId, userId: req.user.userId },
     });
     if (!child) {
-      return res.status(404).json({ message: "child not found" });
-    }   
-    const parsedDueDate = new Date(dueDate);
+      return res.status(403).json({ message: "child not found" });
+    }
     const newImmunisation = await prisma.immunisation.create({
-      data: {  vaccineName,
-      dueDate: parsedDueDate,
-      childId: childId,}
+      data: {
+        vaccineId,
+        administeredDate: administeredDate ? new Date(administeredDate) : null,
+        childId: childId,
+        administered: true,
+      },
     });
     return res.status(201).json({
       message: "Immunisation created successfully",
@@ -31,25 +33,55 @@ router.post("/Immunisation", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/children/:childId/immunisations", verifyToken, async (req, res) => {
+router.get(
+  "/children/:childId/immunisations",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const { childId } = req.params;
+      const child = await prisma.child.findFirst({
+        where: {
+          id: childId,
+          userId: req.user.userId,
+        },
+      });
+      if (!child) {
+        return res.status(403).json({ message: "access denied" });
+      }
+      const immunisations = await prisma.immunisation.findMany({
+        where: { childId },
+      });
+      return res
+        .status(200)
+        .json({ message: "list of immunisations", immunisations });
+    } catch (error) {
+      console.error("error message", error);
+      return res.status(500).json({ message: "server error" });
+    }
+  },
+);
+router.delete("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
   try{
-    const {childId} = req.params;
-    const child = await prisma.child.findFirst({
+    const {immunisationId}   = req.params;
+    const immunisation = await prisma.immunisation.findFirst({
       where:{
-        id:childId,
+        id:immunisationId,
+        userId:req.user.userId
       }
     })
-if(!child){
-  return res.status(403).json({message:"access denied"})
-}
-const immunisations = await prisma.immunisation.findMany({
-  where:{childId}
-}) 
-return res.status(200).json({message:"list of immunisations", immunisations})
-
-  }catch(error){ 
+    if(!immunisation){
+      return res.status(403).json({message:"Access denied"})
+    }
+    await prisma.immunisation.delete({
+      where:{
+        id:immunisationId,
+      }
+    })
+    return res.status(204).send();
+  }catch(error){
     console.error("error message", error);
     return res.status(500).json({ message: "server error" });
   }
 })
+
 module.exports = router;
