@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const prisma = require("./prismaClient");
+const prisma = require("../../prismaClient");
 const verifyToken = require("../middleware/auth")
 
 router.post("/GrowthRecord", verifyToken,async (req,res) =>{

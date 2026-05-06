@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const prisma = require("./prismaClient");
+const prisma = require("../../prismaClient");
 const verifyToken = require("./authRoutes")
 
 router.post("/Immunisation", verifyToken, async (req, res) => {
@@ -30,4 +30,26 @@ router.post("/Immunisation", verifyToken, async (req, res) => {
     return res.status(500).json({ message: "server error" });
   }
 });
+
+router.get("/children/:childId/immunisations", verifyToken, async (req, res) => {
+  try{
+    const {childId} = req.params;
+    const child = await prisma.child.findFirst({
+      where:{
+        id:childId,
+      }
+    })
+if(!child){
+  return res.status(403).json({message:"access denied"})
+}
+const immunisations = await prisma.immunisation.findMany({
+  where:{childId}
+}) 
+return res.status(200).json({message:"list of immunisations", immunisations})
+
+  }catch(error){ 
+    console.error("error message", error);
+    return res.status(500).json({ message: "server error" });
+  }
+})
 module.exports = router;

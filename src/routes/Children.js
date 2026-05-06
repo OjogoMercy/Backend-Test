@@ -3,7 +3,7 @@ const router = express.Router();
 const prisma = require("../../prismaClient");
 const verifyToken = require("../middleware/auth");
 
-router.post("/Children", verifyToken, async (req, res) => {
+router.post("/children", verifyToken, async (req, res) => {
   try {
     const { name, dateOfBirth, gender } = req.body;
     if (!name || !dateOfBirth || !gender) {
@@ -30,14 +30,14 @@ router.post("/Children", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/Children", verifyToken,async (req,res) =>{
+router.get("/children", verifyToken,async (req,res) =>{
     try{
 const children = await prisma.child.findMany({
     where:{
         userId:req.user.userId
     }
 })
-return res.status(200).json({message:"List of Children:", children})
+return res.status(200).json({message:"List of children:", children})
     }catch(error){
         console.error("error message", error)
         return res.status(500).json({message:"server error"})
@@ -46,7 +46,6 @@ return res.status(200).json({message:"List of Children:", children})
 router.get("/children/:childId/growthRecords", verifyToken, async (req, res) => {
     try {
         const { childId } = req.params;
-
         const child = await prisma.child.findFirst({
             where: {
                 id: childId,
@@ -56,13 +55,10 @@ router.get("/children/:childId/growthRecords", verifyToken, async (req, res) => 
         if (!child) {
             return res.status(403).json({ message: "Access denied" });
         }
-
         const growthRecords = await prisma.growthRecord.findMany({
             where: { childId }
         });
-
         return res.status(200).json({ message: "Growth records:", growthRecords });
-
     } catch (error) {
         console.error("Error message", error);
         return res.status(500).json({ message: "server error" });
