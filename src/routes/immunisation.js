@@ -85,19 +85,21 @@ router.delete("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
 })
 router.patch("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
   try{
-    const {childId} = req.params;
+    const {immunisationId} = req.params;
     const { administered } = req.body;
  const existingChild = await prisma.child.findFirst({
   where:{
-    id:childId,
-    userId:req.user.userId
+    id:immunisationId,
+    child:{
+      userId:req.user.userId
+    }
   }
  })
  if(!existingChild){
   return res.status(404).json({message:"Child does not exist"})
  }
  const updatedChild = await prisma.child.update({
-  where:{id:childId},
+  where:{id:immunisationId},
   data:{administered:administered}
  })
  return res.status(200).json({message:"Immunisation updated successfully", immunisation:updatedChild})
