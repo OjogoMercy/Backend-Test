@@ -3,7 +3,7 @@ const router = express.Router();
 const prisma = require("../../prismaClient");
 const verifyToken = require("../middleware/auth");
 
-router.post("/GrowthRecord", verifyToken, async (req, res) => {
+router.post("/GrowthRecord", verifyToken, async (req, res, next) => {
   try {
     const { height, weight, childId, date } = req.body;
     const missingField = [];
@@ -38,14 +38,13 @@ router.post("/GrowthRecord", verifyToken, async (req, res) => {
       growthRecord: newGrowthRecord,
     });
   } catch (error) {
-    console.error("error messsage", error);
-    return res.status(500).json({ message: "server error" });
+    next(error);
   }
 });
 router.delete(
   "/growthRecord/:growthRecordId",
   verifyToken,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { growthRecordId } = req.params;
       const growthRecord = await prisma.growthRecord.findFirst({
@@ -64,8 +63,7 @@ router.delete(
       });
       return res.status(204).send();
     } catch (error) {
-      console.error("error messsage", error);
-      return res.status(500).json({ message: "server error" });
+      next(error);
     }
   },
 );

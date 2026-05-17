@@ -4,8 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../../prismaClient");
 
-
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
   try {
     const { userName, email, password } = req.body;
     if (!userName || !email || !password) {
@@ -22,11 +21,10 @@ router.post("/register", async (req, res) => {
     });
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error("Register error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 });
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -45,10 +43,11 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
-    return res.status(200).json({ message: "Login successful", token ,userId:foundUser});
+    return res
+      .status(200)
+      .json({ message: "Login successful", token, userId: foundUser });
   } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 });
 
