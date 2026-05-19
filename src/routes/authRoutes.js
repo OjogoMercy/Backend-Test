@@ -58,7 +58,6 @@ router.get("/profile", verifyToken, async (req, res, next) => {
       select: {
         userName: true,
         id: true,
-        password: false,
         email: true,
         children: true,
       },
