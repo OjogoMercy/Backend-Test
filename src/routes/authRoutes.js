@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../../prismaClient");
+const verifyToken = require("../middleware/auth");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -46,6 +47,29 @@ router.post("/login", async (req, res, next) => {
     return res
       .status(200)
       .json({ message: "Login successful", token, userId: foundUser });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/profile", verifyToken, async (req, res, next) => {
+  try {
+    const userProfile = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: {
+        userName: true,
+        id: true,
+        password: false,
+        email: true,
+        children: true,
+      },
+    });
+    if (!userProfile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({
+      message: "User profile retrieved succesfully",
+      profile: userProfile,
+    });
   } catch (error) {
     next(error);
   }
