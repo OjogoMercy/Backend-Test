@@ -41,6 +41,49 @@ router.post("/GrowthRecord", verifyToken, async (req, res, next) => {
     next(error);
   }
 });
+
+// first request parameters from the body ,
+//  then wheck if the child exists first using the id ,
+// if the child does not exist throw an error then ,
+// but then if the child oes then you can proceed to update
+//updates can be done through creating a function that accepts the new parameters and then updates
+//after updating then return the success status code
+
+router.patch(
+  "/growthRecord:growthRecordId",
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      const { growthRecordId } = req.params;
+      const { height, weight, date } = req.body;
+      const existingChild = await prisma.child.findFirst({
+        where: {
+          id: growthRecordId,
+          child: {
+            userId: req.user.userId,
+          },
+        },
+      });
+      if (!existingChild) {
+        return res.status(404).json({
+          message: "This child does not exist",
+        });
+      }
+      const updatedRecord = await prisma.child.update({
+        where: {
+          id: growthRecordId,
+        },
+        data: {
+          height: height,
+          weight: weight,
+          date: date,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 router.delete(
   "/growthRecord/:growthRecordId",
   verifyToken,

@@ -19,13 +19,10 @@ app.use(immunisationRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
-  return (
-    res.status(statusCode),
-    json({
-      status: "error",
-      message: err.message || "Something went wrong",
-    })
-  );
+  return res.status(statusCode).json({
+    status: "error",
+    message: err.message || "Something went wrong",
+  });
 });
 
 app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));

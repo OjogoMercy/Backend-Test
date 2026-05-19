@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const prisma = require("../../prismaClient");
 const verifyToken = require("./authRoutes");
+const { nextDay } = require("date-fns");
 
 router.post("/Immunisation", verifyToken, async (req, res) => {
   try {
@@ -60,53 +61,63 @@ router.get(
     }
   },
 );
-router.delete("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
-  try{
-    const {immunisationId}   = req.params;
-    const immunisation = await prisma.immunisation.findFirst({
-      where:{
-        id:immunisationId,
-        userId:req.user.userId
+router.delete(
+  "/immunisation/:immunisationId",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const { immunisationId } = req.params;
+      const immunisation = await prisma.immunisation.findFirst({
+        where: {
+          id: immunisationId,
+          userId: req.user.userId,
+        },
+      });
+      if (!immunisation) {
+        return res.status(403).json({ message: "Access denied" });
       }
-    })
-    if(!immunisation){
-      return res.status(403).json({message:"Access denied"})
+      await prisma.immunisation.delete({
+        where: {
+          id: immunisationId,
+        },
+      });
+      return res.status(204).send();
+    } catch (error) {
+      console.error("error message", error);
+      return res.status(500).json({ message: "server error" });
     }
-    await prisma.immunisation.delete({
-      where:{
-        id:immunisationId,
+  },
+);
+router.patch(
+  "/immunisation/:immunisationId",
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      const { immunisationId } = req.params;
+      const { administered } = req.body;
+      const existingChild = await prisma.child.findFirst({
+        where: {
+          id: immunisationId,
+          child: {
+            userId: req.user.userId,
+          },
+        },
+      });
+      if (!existingChild) {
+        return res.status(404).json({ message: "Child does not exist" });
       }
-    })
-    return res.status(204).send();
-  }catch(error){
-    console.error("error message", error);
-    return res.status(500).json({ message: "server error" });
-  }
-})
-router.patch("/immunisation/:immunisationId", verifyToken,async (req,res) =>{
-  try{
-    const {immunisationId} = req.params;
-    const { administered } = req.body;
- const existingChild = await prisma.child.findFirst({
-  where:{
-    id:immunisationId,
-    child:{
-      userId:req.user.userId
+      const updatedChild = await prisma.child.update({
+        where: { id: immunisationId },
+        data: { administered: administered },
+      });
+      return res.status(200).json({
+        message: "Immunisation updated successfully",
+        immunisation: updatedChild,
+      });
+    } catch (error) {
+      next(error);
     }
-  }
- })
- if(!existingChild){
-  return res.status(404).json({message:"Child does not exist"})
- }
- const updatedChild = await prisma.child.update({
-  where:{id:immunisationId},
-  data:{administered:administered}
- })
- return res.status(200).json({message:"Immunisation updated successfully", immunisation:updatedChild})
-  }catch(error){
-    console.error("error message", error);
-    return res.status(500).json({ message: "server error" });
-  }
-})
+  },
+);
 
 module.exports = router;
