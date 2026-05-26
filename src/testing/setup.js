@@ -1,4 +1,4 @@
-import prisma from "../../prismaClient.js";
+const prisma = require("../../prismaClient.js");
 
 beforeAll(async () => {
   // Clean database before all tests run

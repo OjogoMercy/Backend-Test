@@ -25,4 +25,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
+}
+module.exports = app;
