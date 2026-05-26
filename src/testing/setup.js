@@ -1,4 +1,3 @@
-require("dotenv").config();
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("TEST_DATABASE_URL:");
 const prisma = require("../../prismaClient.js");
