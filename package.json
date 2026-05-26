@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFilesAfterFramework": [
+      "./src/tests/setup.js"
+    ]
   },
   "keywords": [],
   "author": "",
