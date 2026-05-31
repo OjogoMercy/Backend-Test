@@ -1,6 +1,3 @@
-const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-
 const { PrismaNeon } = require("@prisma/adapter-neon");
 const { neonConfig, Pool } = require("@neondatabase/serverless");
 const { PrismaClient } = require("@prisma/client");

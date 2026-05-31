@@ -6,15 +6,6 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFiles": [
-      "./src/testing/env.js"
-    ],
-    "setupFilesAfterEnv": [
-      "./src/testing/setup.js"
-    ]
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
