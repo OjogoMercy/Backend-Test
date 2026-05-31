@@ -5,16 +5,18 @@ const ws = require("ws");
 
 neonConfig.webSocketConstructor = ws;
 
-const connectionString =
-  process.env.NODE_ENV === "test"
-    ? process.env.TEST_DATABASE_URL
-    : process.env.DATABASE_URL;
+// const connectionString =
+//   process.env.NODE_ENV === "test"
+//     ? process.env.TEST_DATABASE_URL
+//     : process.env.DATABASE_URL;
 
-if (!connectionString) {
-  throw new Error(
-    `Connection string is undefined! NODE_ENV is: ${process.env.NODE_ENV}`,
-  );
-}
+// if (!connectionString) {
+//   throw new Error(
+//     `Connection string is undefined! NODE_ENV is: ${process.env.NODE_ENV}`,
+//   );
+// }
+const connectionString =
+  process.env.TEST_DATABASE_URL || process.env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);

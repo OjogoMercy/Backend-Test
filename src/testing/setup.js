@@ -1,5 +1,8 @@
 console.log("Setup Hook Initializing...");
 console.log("NODE_ENV active status:", process.env.NODE_ENV);
+console.log("DATABASE_URL present:", !!process.env.DATABASE_URL);
+console.log("TEST_DATABASE_URL present:", !!process.env.TEST_DATABASE_URL);
+console.log("NODE_ENV:", process.env.NODE_ENV);
 
 const prisma = require("../../prismaClient.js");
 

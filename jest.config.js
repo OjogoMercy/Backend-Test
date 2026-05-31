@@ -1,8 +1,8 @@
-// jest.config.js
+require("dotenv").config(); // loads .env from project root automatically
+process.env.NODE_ENV = "test";
+
 module.exports = {
   testEnvironment: "node",
   testTimeout: 15000,
-  setupFiles: ["./src/testing/setupEnv.js"],
-  setupFilesAfterEnv: ["./src/testing/setup.js"],
-  globalSetup: "./src/testing/globalSetup.js",
+  setUpFilesAfterEnv: ["./src/testing/setup.js"],
 };
