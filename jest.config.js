@@ -4,5 +4,5 @@ process.env.NODE_ENV = "test";
 module.exports = {
   testEnvironment: "node",
   testTimeout: 15000,
-  setUpFilesAfterEnv: ["./src/testing/setup.js"],
+  setupFilesAfterEnv: ["./src/testing/setup.js"],
 };
