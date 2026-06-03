@@ -1,9 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const authController = require("./auth.controller");
-import {verifyToken} from "../../middleware/auth";
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.get("/profile", verifyToken, authController.profile);
+import express, { Router } from "express";
+import authController from "./auth.controller";
+import { verifyToken } from "../../middleware/auth";
 
-module.exports = router;
+const router: Router = express.Router();
+
+router.post("/register", authController.register as any);
+router.post("/login", authController.login as any);
+router.get("/profile", verifyToken as any, authController.profile as any);
+
+const authRoutes = router;
+export default authRoutes;

@@ -5,7 +5,7 @@ const app = express();
 const immunisationRoutes = require("./src/routes/immunisation");
 const childrenRoutes = require("./src/routes/Children");
 const growthRoutes = require("./src/routes/growthRecord");
-const authRoutes = require("./src/routes/authRoutes");
+import authRoutes from "./src/modules/auth/Auth.routes"
 const { json } = require("stream/consumers");
 
 const PORT = process.env.PORT || 3000;
