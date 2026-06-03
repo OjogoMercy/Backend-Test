@@ -1,17 +1,12 @@
 import { Router } from "express";
 import { verifyToken } from "../../middleware/auth";
-import {
-  createImmunisation,
-  getImmunisationsByChild,
-  deleteImmunisation,
-  updateImmunisation,
-} from "./immunisations.controller";
+import immunisationController from "./immunisations.controller";
 
 const router = Router();
 
-router.post("/immunisations", verifyToken, createImmunisation);
-router.get("/children/:childId/immunisations", verifyToken, getImmunisationsByChild);
-router.delete("/immunisations/:immunisationId", verifyToken, deleteImmunisation);
-router.patch("/immunisations/:immunisationId", verifyToken, updateImmunisation);
+router.post("/immunisations", verifyToken, immunisationController.createImmunisation);
+router.get("/children/:childId/immunisations", verifyToken, immunisationController.getImmunisationsByChild);
+router.delete("/immunisations/:immunisationId", verifyToken, immunisationController.handleDeleteImmunisation);
+router.patch("/immunisations/:immunisationId", verifyToken, immunisationController.handleUpdateImmunisation);
 
 export default router;

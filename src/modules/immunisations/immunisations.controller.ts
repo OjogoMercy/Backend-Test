@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../types/express";
 import * as immunisationService from "./immunisations.services";
 
-export const createImmunisation = async (
+const createImmunisation = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -34,7 +34,7 @@ export const createImmunisation = async (
   }
 };
 
-export const getImmunisationsByChild = async (
+const getImmunisationsByChild = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -53,7 +53,7 @@ export const getImmunisationsByChild = async (
   }
 };
 
-export const handleDeleteImmunisation = async (
+const handleDeleteImmunisation = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -70,7 +70,7 @@ export const handleDeleteImmunisation = async (
   }
 };
 
-export const handleUpdateImmunisation = async (
+const handleUpdateImmunisation = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -105,3 +105,10 @@ export const handleUpdateImmunisation = async (
     next(error);
   }
 };
+const immunisationController = {
+  createImmunisation,
+  getImmunisationsByChild,
+  handleDeleteImmunisation,
+  handleUpdateImmunisation,
+};
+export default immunisationController;

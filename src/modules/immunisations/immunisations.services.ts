@@ -1,6 +1,6 @@
 import {prisma} from "../../../prismaClient";
 
-export const createImmunisation = async (
+ const createImmunisation = async (
   vaccineId: string,
   administeredDate: Date,
   childId: string,
@@ -26,7 +26,7 @@ export const createImmunisation = async (
   });
 };
 
-export const getImmunisationsByChild = async (
+ const getImmunisationsByChild = async (
   childId: string,
   userId: string
 ) => {
@@ -40,7 +40,7 @@ export const getImmunisationsByChild = async (
     throw Error;
   }  
   }
-  export const updateImmunisation = async (
+   const updateImmunisation = async (
   immunisationId: string,
   userId: string,
   administered: boolean
@@ -63,7 +63,7 @@ export const getImmunisationsByChild = async (
     data: { administered },
   });
 };
-export const deleteImmunisation = async (
+ const deleteImmunisation = async (
   immunisationId: string,
   userId: string
 ) => {
@@ -84,3 +84,10 @@ export const deleteImmunisation = async (
     where: { id: immunisationId },
   });
 };
+const immunisationService = {
+  createImmunisation,
+  getImmunisationsByChild,
+  updateImmunisation,
+  deleteImmunisation
+};
+export default immunisationService;
