@@ -17,7 +17,7 @@ app.use(childrenRoutes);
 app.use(growthRoutes);
 app.use(immunisationRoutes);
 
-app.use((err, req, res, next) => {
+app.use((err: { statusCode: number; message: any; }, req: any, res: { status: (arg0: any) => { (): any; new(): any; json: { (arg0: { status: string; message: any; }): any; new(): any; }; }; }, next: any) => {
   const statusCode = err.statusCode || 500;
   return res.status(statusCode).json({
     status: "error",
