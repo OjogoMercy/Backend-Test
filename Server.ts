@@ -1,23 +1,24 @@
-require("dotenv").config();
-const path = require("path");
-const express = require("express");
-const app = express();
-const immunisationRoutes = require("./src/routes/immunisation");
-const childrenRoutes = require("./src/routes/Children");
-const growthRoutes = require("./src/routes/growthRecord");
-import authRoutes from "./src/modules/auth/Auth.routes"
-const { json } = require("stream/consumers");
+import dotenv from "dotenv";
+dotenv.config();
 
+import express, { Request, Response, NextFunction } from "express";
+import authRoutes from "./src/modules/auth/Auth.routes";
+import childrenRoutes from "./src/modules/children/Children.routes";
+import growthRoutes from "./src/modules/growthRecords/growthRecords.routes";
+import immunisationRoutes from "./src/modules/immunisations/immunisations.routes";
+
+const app = express();
 const PORT = process.env.PORT || 3000;
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(authRoutes);
-app.use(childrenRoutes);
-app.use(growthRoutes);
-app.use(immunisationRoutes);
 
-app.use((err: { statusCode: number; message: any; }, req: any, res: { status: (arg0: any) => { (): any; new(): any; json: { (arg0: { status: string; message: any; }): any; new(): any; }; }; }, next: any) => {
+app.use("/api", authRoutes);
+app.use("/api", childrenRoutes);
+app.use("/api", growthRoutes);
+app.use("/api", immunisationRoutes);
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   return res.status(statusCode).json({
     status: "error",
@@ -26,6 +27,7 @@ app.use((err: { statusCode: number; message: any; }, req: any, res: { status: (a
 });
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => console.log(`server listening on PORT ${PORT}`));
+  app.listen(PORT, () => console.log(`Server listening on PORT ${PORT}`));
 }
-module.exports = app;
+
+export default app;
