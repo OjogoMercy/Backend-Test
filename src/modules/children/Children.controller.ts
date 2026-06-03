@@ -1,6 +1,5 @@
-import { Response, NextFunction } from "express";
+import { Response, NextFunction,Request } from "express";
 import childService from "./Children.services";
-import { Request } from "express";
 
 export interface AuthenticatedRequest extends Request {
   user: {
@@ -49,7 +48,7 @@ export const getChildren = async (
     const children = await childService.getChildrenByUserId(req.user.userId);
     
     if (!children || children.length === 0) {
-      return res.status(404).json({ message: "No children found for this user" });
+     return res.status(200).json({ message: "Children retrieved successfully", children });
     }
     
     return res.status(200).json({ 
@@ -68,19 +67,10 @@ export const getGrowthRecords = async (
 ) => {
   try {
     const { childId } = req.params;
-    
-    const childRecord = await childService.getGrowthRecords(
-      childId,
-      req.user.userId,
-    );
-    
-    if (!childRecord) {
-      return res.status(404).json({ message: "Child not found" });
-    }
-
+    const growthRecords = await childService.getGrowthRecords(childId, req.user.userId);
     return res.status(200).json({
       message: "Growth records retrieved successfully",
-      records: childRecord
+      records: growthRecords,
     });
   } catch (error) {
     next(error);
