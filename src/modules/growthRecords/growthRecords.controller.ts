@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../types/express";
 import * as growthRecordService from "./growthRecords.services";
 
-export const createGrowthRecord = async (
+ const createGrowthRecord = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -37,7 +37,7 @@ export const createGrowthRecord = async (
   }
 };
 
-export const updateGrowthRecord = async (
+ const updateGrowthRecord = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -68,7 +68,7 @@ export const updateGrowthRecord = async (
   }
 };
 
-export const deleteGrowthRecord = async (
+ const deleteGrowthRecord = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -81,3 +81,5 @@ export const deleteGrowthRecord = async (
     next(error);
   }
 };
+const getGrowthRecordController = { createGrowthRecord, updateGrowthRecord, deleteGrowthRecord };
+export default getGrowthRecordController;

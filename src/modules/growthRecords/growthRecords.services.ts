@@ -1,6 +1,6 @@
-import prisma from "../../../prismaClient";
+import {prisma} from "../../../prismaClient";
 
-export const createGrowthRecord = async (
+ const createGrowthRecord = async (
   height: number,
   weight: number,
   childId: string,
@@ -27,7 +27,7 @@ export const createGrowthRecord = async (
   });
 };
 
-export const updateGrowthRecord = async (
+ const updateGrowthRecord = async (
   growthRecordId: string,
   userId: string,
   height?: number,
@@ -53,7 +53,7 @@ export const updateGrowthRecord = async (
   });
 };
 
-export const deleteGrowthRecord = async (
+ const deleteGrowthRecord = async (
   growthRecordId: string,
   userId: string
 ) => {
@@ -74,3 +74,5 @@ export const deleteGrowthRecord = async (
     where: { id: growthRecordId },
   });
 };
+const growthRecordService = { createGrowthRecord, updateGrowthRecord, deleteGrowthRecord };
+export default growthRecordService;
