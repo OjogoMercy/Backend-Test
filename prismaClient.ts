@@ -1,6 +1,6 @@
-const { PrismaNeon } = require("@prisma/adapter-neon");
-const { neonConfig, Pool } = require("@neondatabase/serverless");
-const { PrismaClient } = require("@prisma/client");
+import { PrismaNeon } from "@prisma/adapter-neon";
+import {neonConfig,Pool} from "@neondatabase/serverless";
+import { PrismaClient } from "@prisma/client";
 const ws = require("ws");
 
 neonConfig.webSocketConstructor = ws;
@@ -20,6 +20,5 @@ const connectionString =
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
-const prisma = new PrismaClient({ adapter });
+export const prisma = new PrismaClient({ adapter });
 
-module.exports = prisma;
