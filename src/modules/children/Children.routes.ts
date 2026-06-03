@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { verifyToken } from "../../middleware/auth";
-import { createChild, getChildren, getGrowthRecords } from "./Children.controller";
-
+import childrenController from "./Children.controller";
 const router = Router();
 
-router.post("/children", verifyToken, createChild);
-router.get("/children", verifyToken, getChildren);
-router.get("/children/:childId/growthRecords", verifyToken, getGrowthRecords);
+router.post("/children", verifyToken, childrenController.createChild);
+router.get("/children", verifyToken, childrenController.getChildren);
+router.get("/children/:childId/growthRecords", verifyToken, childrenController.getGrowthRecords);
 
-export default router;
+const childrenRoutes = router;
+export default childrenRoutes;

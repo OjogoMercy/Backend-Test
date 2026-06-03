@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-export const createChild = async (
+ const createChild = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -39,7 +39,7 @@ export const createChild = async (
   }
 };
 
-export const getChildren = async (
+ const getChildren = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -60,7 +60,7 @@ export const getChildren = async (
   }
 };
 
-export const getGrowthRecords = async (
+ const getGrowthRecords = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
@@ -76,3 +76,5 @@ export const getGrowthRecords = async (
     next(error);
   }
 };
+const childrenController = { createChild, getChildren, getGrowthRecords };
+export default childrenController;

@@ -31,14 +31,14 @@ const getGrowthRecords = async (childId: string, userId: string) => {
       userId: userId,
     },
   });
-  if(!child) {
+  if (!child) {
     const error = new Error("Child not found");
     error.statusCode = 404;
     throw error;
   }
   const growthRecord = await prisma.growthRecord.findMany({
-    where:{childId}
-  })
+    where: { childId },
+  });
   return growthRecord;
 };
 
