@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import argon from "argon2";
 import {prisma} from "../../../prismaClient"
 
 const registerUser = async (userName: string, email: string, password: string) => {
@@ -9,8 +9,12 @@ const registerUser = async (userName: string, email: string, password: string) =
     error.statusCode = 409;
     throw error;
   }
-
-  const hashPassword = await bcrypt.hash(password, 10);
+  const hashPassword = await argon.hash(password,{
+     type: argon.argon2id,
+            timeCost: 4,
+            memoryCost: 65536,
+            parallelism: 1
+  });
   await prisma.user.create({
     data: { userName, email, password: hashPassword },
   });
@@ -24,7 +28,7 @@ const loginUser = async (email: string, password: string) => {
     throw error;
   }
 
-  const match = await bcrypt.compare(password, foundUser.password);
+  const match = await argon.verify(foundUser.password, password);
   if (!match) {
     const error = new Error("Invalid email or password");
     error.statusCode = 401;
