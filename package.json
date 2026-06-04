@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build":"tsc",
+    "start": "node dist/Server.js",
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles",
     "dev": "tsx watch Server.ts"
   },
