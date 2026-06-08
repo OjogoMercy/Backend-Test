@@ -3,13 +3,10 @@ import childService from "./Children.services";
 
 import { AuthenticatedRequest } from "../../types/express";
 
-const createChild = async (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+const createChild = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, dateOfBirth, gender } = req.body;
+    const authReq = req as AuthenticatedRequest;
     if (!name || !dateOfBirth || !gender) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
@@ -18,12 +15,14 @@ const createChild = async (
     if (isNaN(parsedDOB.getTime())) {
       return res.status(400).json({ message: "Invalid date format" });
     }
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const newChild = await childService.createChild(
       name,
       parsedDOB,
       gender,
-      req.user.userId,
+      userId,
     );
 
     return res.status(201).json({
@@ -35,13 +34,12 @@ const createChild = async (
   }
 };
 
-const getChildren = async (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+const getChildren = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const children = await childService.getChildrenByUserId(req.user.userId);
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    const children = await childService.getChildrenByUserId(userId);
 
     if (!children || children.length === 0) {
       return res
