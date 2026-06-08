@@ -1,24 +1,11 @@
 import { PrismaNeon } from "@prisma/adapter-neon";
-import {neonConfig,Pool} from "@neondatabase/serverless";
+import { neonConfig } from "@neondatabase/serverless";
 import { PrismaClient } from "@prisma/client";
 import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
 
-// const connectionString =
-//   process.env.NODE_ENV === "test"
-//     ? process.env.TEST_DATABASE_URL
-//     : process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL as string;
 
-// if (!connectionString) {
-//   throw new Error(
-//     `Connection string is undefined! NODE_ENV is: ${process.env.NODE_ENV}`,
-//   );
-// }
-const connectionString =
-  process.env.TEST_DATABASE_URL || process.env.DATABASE_URL;
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaNeon(pool);
+const adapter = new PrismaNeon({ connectionString });
 export const prisma = new PrismaClient({ adapter });
-
