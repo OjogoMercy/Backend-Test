@@ -70,7 +70,10 @@ const getGrowthRecords = async (
     const userId = authReq.user?.userId;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-    const growthRecords = await childService.getGrowthRecords(childId, userId);
+    const growthRecords = await childService.getGrowthRecords(
+      childId as string,
+      userId,
+    );
     return res.status(200).json({
       message: "Growth records retrieved successfully",
       records: growthRecords,

@@ -1,14 +1,18 @@
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import { AuthenticatedRequest } from "../../types/express";
-import * as immunisationService from "./immunisations.services";
+import immunisationService from "./immunisations.services";
 
 const createImmunisation = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { vaccineId, administeredDate, childId } = req.body;
+    const authReq = req as unknown as AuthenticatedRequest;
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const { vaccineId, administeredDate, childId } = authReq.body;
 
     if (!vaccineId || !administeredDate || !childId) {
       return res.status(400).json({ message: "Please fill in all fields" });
@@ -22,7 +26,7 @@ const createImmunisation = async (
       vaccineId,
       new Date(administeredDate),
       childId,
-      req.user.userId,
+      userId,
     );
 
     return res.status(201).json({
@@ -35,15 +39,18 @@ const createImmunisation = async (
 };
 
 const getImmunisationsByChild = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { childId } = req.params;
+    const authReq = req as unknown as AuthenticatedRequest;
+    const { childId } = authReq.params;
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
     const immunisations = await immunisationService.getImmunisationsByChild(
-      childId,
-      req.user.userId,
+      childId as string,
+      userId,
     );
     return res
       .status(200)
@@ -54,15 +61,18 @@ const getImmunisationsByChild = async (
 };
 
 const handleDeleteImmunisation = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { immunisationId } = req.params;
+    const authReq = req as unknown as AuthenticatedRequest;
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    const { immunisationId } = authReq.params;
     await immunisationService.deleteImmunisation(
-      immunisationId,
-      req.user.userId,
+      immunisationId as string,
+      userId,
     );
     return res.status(204).send();
   } catch (error) {
@@ -71,13 +81,16 @@ const handleDeleteImmunisation = async (
 };
 
 const handleUpdateImmunisation = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { immunisationId } = req.params;
-    const { administered } = req.body;
+    const authReq = req as unknown as AuthenticatedRequest;
+    const userId = authReq.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    const { immunisationId } = authReq.params;
+    const { administered } = authReq.body;
 
     if (administered === undefined) {
       return res
@@ -86,8 +99,8 @@ const handleUpdateImmunisation = async (
     }
 
     const updated = await immunisationService.updateImmunisation(
-      immunisationId,
-      req.user.userId,
+      immunisationId as string,
+      userId,
       administered,
     );
 

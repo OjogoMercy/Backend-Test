@@ -1,10 +1,10 @@
-import {prisma} from "../../../prismaClient";
+import { prisma } from "../../../prismaClient";
 
- const createImmunisation = async (
+const createImmunisation = async (
   vaccineId: string,
-  administeredDate: Date,
+  dueDate: Date,
   childId: string,
-  userId: string
+  userId: string,
 ) => {
   const child = await prisma.child.findFirst({
     where: { id: childId, userId },
@@ -19,31 +19,28 @@ import {prisma} from "../../../prismaClient";
   return await prisma.immunisation.create({
     data: {
       vaccineId,
-      administeredDate,
+      dueDate,
       childId,
       administered: false,
     },
   });
 };
 
- const getImmunisationsByChild = async (
-  childId: string,
-  userId: string
-) => {
+const getImmunisationsByChild = async (childId: string, userId: string) => {
   const child = await prisma.child.findFirst({
     where: { id: childId, userId },
   });
 
   if (!child) {
     const error = new Error("Access denied");
-     (error as any).statusCode = 403;
+    (error as any).statusCode = 403;
     throw Error;
-  }  
   }
-   const updateImmunisation = async (
+};
+const updateImmunisation = async (
   immunisationId: string,
   userId: string,
-  administered: boolean
+  administered: boolean,
 ) => {
   const immunisation = await prisma.immunisation.findFirst({
     where: {
@@ -63,10 +60,7 @@ import {prisma} from "../../../prismaClient";
     data: { administered },
   });
 };
- const deleteImmunisation = async (
-  immunisationId: string,
-  userId: string
-) => {
+const deleteImmunisation = async (immunisationId: string, userId: string) => {
   const immunisation = await prisma.immunisation.findFirst({
     where: {
       id: immunisationId,
@@ -88,6 +82,6 @@ const immunisationService = {
   createImmunisation,
   getImmunisationsByChild,
   updateImmunisation,
-  deleteImmunisation
+  deleteImmunisation,
 };
 export default immunisationService;
