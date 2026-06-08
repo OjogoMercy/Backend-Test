@@ -1,4 +1,5 @@
 import { prisma } from "../../../prismaClient";
+import { AppError } from "../../types/express";
 
 const createChild = async (
   name: string,
@@ -32,9 +33,7 @@ const getGrowthRecords = async (childId: string, userId: string) => {
     },
   });
   if (!child) {
-    const error = new Error("Child not found");
-    error.statusCode = 404;
-    throw error;
+    throw new AppError("child not found", 404);
   }
   const growthRecord = await prisma.growthRecord.findMany({
     where: { childId },

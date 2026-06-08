@@ -1,19 +1,22 @@
 import jwt from "jsonwebtoken";
 import argon from "argon2";
-import {prisma} from "../../../prismaClient"
+import { prisma } from "../../../prismaClient";
+import { AppError } from "../../types/express";
 
-const registerUser = async (userName: string, email: string, password: string) => {
+const registerUser = async (
+  userName: string,
+  email: string,
+  password: string,
+) => {
   const emailExists = await prisma.user.findUnique({ where: { email } });
   if (emailExists) {
-    const error = new Error("This email already exists");
-    error.statusCode = 409;
-    throw error;
+    throw new AppError("This email already exists", 409);
   }
-  const hashPassword = await argon.hash(password,{
-     type: argon.argon2id,
-            timeCost: 4,
-            memoryCost: 65536,
-            parallelism: 1
+  const hashPassword = await argon.hash(password, {
+    type: argon.argon2id,
+    timeCost: 4,
+    memoryCost: 65536,
+    parallelism: 1,
   });
   await prisma.user.create({
     data: { userName, email, password: hashPassword },
@@ -23,22 +26,18 @@ const registerUser = async (userName: string, email: string, password: string) =
 const loginUser = async (email: string, password: string) => {
   const foundUser = await prisma.user.findUnique({ where: { email } });
   if (!foundUser) {
-    const error = new Error("Invalid email or password");
-    error.statusCode = 401;
-    throw error;
+    throw new AppError("Invalid email or password", 401);
   }
 
   const match = await argon.verify(foundUser.password, password);
   if (!match) {
-    const error = new Error("Invalid email or password");
-    error.statusCode = 401;
-    throw error;
+    throw new AppError("invalid email or password", 401);
   }
 
   const token = jwt.sign(
     { userId: foundUser.id, email: foundUser.email },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
+    process.env.JWT_SECRET as any,
+    { expiresIn: "1d" },
   );
 
   return { token, userId: foundUser };
@@ -56,13 +55,11 @@ const getUserProfile = async (userId: string) => {
   });
 
   if (!userProfile) {
-    const error = new Error("User not found");
-    error.statusCode = 404;
-    throw error;
+    throw new AppError("User profile not found ", 404);
   }
 
   return userProfile;
 };
 
-const authService  = { registerUser, loginUser, getUserProfile };
+const authService = { registerUser, loginUser, getUserProfile };
 export default authService;
