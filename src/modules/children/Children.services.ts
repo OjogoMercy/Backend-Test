@@ -1,5 +1,5 @@
 import { prisma } from "../../../prismaClient";
-import { AppError } from "../../types/express";
+import { AppError } from "../../utils/AppError";
 
 const createChild = async (
   name: string,

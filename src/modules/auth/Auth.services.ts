@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import argon from "argon2";
 import { prisma } from "../../../prismaClient";
-import { AppError } from "../../types/express";
+import { AppError } from "../../utils/AppError";
 
 const registerUser = async (
   userName: string,
