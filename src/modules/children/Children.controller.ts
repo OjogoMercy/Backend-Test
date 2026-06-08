@@ -1,7 +1,7 @@
 import { Response, NextFunction, Request } from "express";
 import childService from "./Children.services";
 
-import { AuthenticatedRequest } from "../../types/express";
+import type { AuthenticatedRequest } from "../../types/express";
 
 const createChild = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -1,5 +1,5 @@
 import { Response, NextFunction, Request } from "express";
-import { AuthenticatedRequest } from "../../types/express";
+import type { AuthenticatedRequest } from "../../types/express";
 import growthRecordService from "./growthRecords.services";
 
 const createNewRecord = async (
